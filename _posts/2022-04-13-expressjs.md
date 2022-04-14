@@ -114,7 +114,7 @@ Agora vamos ver como é utilizando o **Express**:
 	})
 ```
 
-2. definimos os arquivos que serão resnderizados utilizando um middleware do Express:
+2. definimos os arquivos que serão renderizados utilizando um middleware do Express:
 ```js
 	const express = require('express')
 	const app = express()
