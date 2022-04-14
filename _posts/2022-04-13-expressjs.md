@@ -165,7 +165,7 @@ Agora vamos ver como é utilizando o **Express**:
 ```
 
 ### Express Routes
-Vamos supor que estamos fazendo um e-commerce e queremos criar uma rota para acessar todos os produto e outra para adicionar um produto. Sem o express as rotas seriam chamadas  de modo similar ao primeiro exemplo, mas com o express seria assim:
+Vamos supor que estamos fazendo um e-commerce e queremos criar uma rota para acessar todos os produto e outra para adicionar um produto. Sem o express as rotas seriam chamadas  de modo similar ao primeiro exemplo, mas utilizando ele seria assim:
 
 1. No arquivo app.js criamos o servidor, importamos as rotas que iremos criar e definimos o nome das rotas que iremos utilizar  :
 ```js
@@ -214,8 +214,9 @@ Vamos supor que estamos fazendo um e-commerce e queremos criar uma rota para ace
 
 ### Middlewares
 Os middlewares são funções que excutam quando uma requisição é feita antes de uma resposta ser dada. Eles recebem como parametro a requisição, a resposta e o next, que indica o que fazer a seguir (a response).
-	- req => middleware =>res
-Para demonstrar, vamos pegar o exemplo anterior, mas agora a rota só pode ser
+- req => middleware =>res
+
+Para demonstrar, vamos pegar o exemplo anterior, mas agora a rota só pode ser acessada
 se o usuário estiver autenticado:
 
 1. Primeiro criamos o middleware:
