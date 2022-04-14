@@ -1,11 +1,10 @@
 
 ---
-toc: true
-layout: post
-title: "Express.Js"
-categories: [node, javascript, express,back-end]
+categories: [node, express, javascript,backend]
 ---
+
 # Express.js
+
 ## O que é ?
 O Express.js é um framework NodeJs que disponibiliza recursos para construção de servidores web, facilitando a criação do back-end.
 	
@@ -15,6 +14,7 @@ O Express.js é um framework NodeJs que disponibiliza recursos para construção
 			3. facilidade de integração com o front-end
 
 ## Na prática
+
 ### Static Files 
 Como exemplo vamos renderizar uma barra de navegação composta pelos seguintes arquivos:  index.html (estrutura), styles.css (estilização), main.js (funcionalidades) e logo.svg (logo).
 
