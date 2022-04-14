@@ -1,0 +1,258 @@
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+title: "Express.Js"
+categories: [node, javascript, express,back-end]
+---
+</code></pre></div></div>
+<h1 id="expressjs">Express.js</h1>
+<h2 id="o-que-é-">O que é ?</h2>
+<p>O Express.js é um framework NodeJs que disponibiliza recursos para construção de servidores web, facilitando a criação do back-end.</p>
+
+<ul>
+  <li>Vantagens em relação ao NodeJs “puro”:
+          1. Pouco código 
+          2. Liberdade para estruturar a aplicação
+          3. facilidade de integração com o front-end</li>
+</ul>
+
+<h2 id="na-prática">Na prática</h2>
+<h3 id="static-files">Static Files</h3>
+<p>Como exemplo vamos renderizar uma barra de navegação composta pelos seguintes arquivos:  index.html (estrutura), styles.css (estilização), main.js (funcionalidades) e logo.svg (logo).</p>
+
+<p>Primeiro vamos ver como com o Node <em>vanilla</em>, <strong>sem framework</strong>. Então, com o projeto já iniciado:</p>
+
+<ol>
+  <li>Iniciamos o servidor:</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kd">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">http</span><span class="dl">'</span><span class="p">)</span> <span class="c1">//built-in</span>
+	
+	<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hellooo</span><span class="dl">'</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Lemos os arquivos que compõem a barra de navegação com a função readFileSync:</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kd">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">http</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="p">{</span><span class="nx">readFileSync</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">)</span> <span class="c1">// built-in</span>
+	
+	<span class="kd">const</span> <span class="nx">homePage</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/index.html</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeStyles</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/styles.css</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeImage</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/logo.svg</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeLogic</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/main.js</span><span class="dl">'</span><span class="p">)</span>
+	
+	<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hellooo</span><span class="dl">'</span><span class="p">)</span>
+	<span class="p">}</span>
+									 
+	<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Agora definimos o que o servidor vai responder quando a requisição desses arquivos for feita:</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kd">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">http</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="p">{</span><span class="nx">readFileSync</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">)</span>
+
+	<span class="kd">const</span> <span class="nx">homePage</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/index.html</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeStyles</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/styles.css</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeImage</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/logo.svg</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">homeLogic</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./navbar-app/browser-app.js</span><span class="dl">'</span><span class="p">)</span>
+  	
+	<span class="c1">// criando o servidor</span>
+	<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		
+	<span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span> <span class="c1">// a url que vem na requisição</span>
+
+	<span class="c1">//home page</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,{</span><span class="dl">'</span><span class="s1">content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text/html</span><span class="dl">'</span><span class="p">});</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">homePage</span><span class="p">);</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+	<span class="p">}</span>
+	<span class="c1">//CSS</span>
+	<span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">/styles.css</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,{</span><span class="dl">'</span><span class="s1">content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text/css</span><span class="dl">'</span><span class="p">});</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">homeStyles</span><span class="p">);</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+	<span class="p">}</span>
+	<span class="c1">//Logo</span>
+	<span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">/logo.svg</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,{</span><span class="dl">'</span><span class="s1">content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">image/svg+xml</span><span class="dl">'</span><span class="p">});</span>
+	<span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">homeImage</span><span class="p">);</span>
+	<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+	<span class="p">}</span>
+
+	<span class="c1">//JS</span>
+	<span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">/main.js</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,{</span><span class="dl">'</span><span class="s1">content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text/javascript</span><span class="dl">'</span><span class="p">});</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">homeLogic</span><span class="p">);</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+	<span class="p">}</span>
+		
+	<span class="c1">//erro 404, no caso do arquivo não existir</span>
+	<span class="k">else</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">404</span><span class="p">,{</span><span class="dl">'</span><span class="s1">content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text/html</span><span class="dl">'</span><span class="p">});</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;h1&gt;Page not found&lt;/h1&gt;</span><span class="dl">'</span><span class="p">);</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+	<span class="p">}</span>
+<span class="p">})</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>	
+</code></pre></div></div>
+
+<p>Agora vamos ver como é utilizando o <strong>Express</strong>:</p>
+
+<ol>
+  <li>criamos o servidor:</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+	
+	<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">,()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">server is litening on port 5000...</span><span class="dl">'</span><span class="p">)</span>
+	<span class="p">})</span>
+</code></pre></div></div>
+
+<ol>
+  <li>definimos os arquivos que serão resnderizados utilizando um middleware do Express:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+ <span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+	
+ <span class="c1">//nesse caso todos os arquivos da barra de navegação estão em uma pasta nomeada 'public'</span>
+ <span class="c1">//passa os arquivos estáticos para o middleware</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kd">static</span><span class="p">(</span><span class="dl">'</span><span class="s1">./public</span><span class="dl">'</span><span class="p">))</span>
+
+ <span class="c1">//nesse caso o all esta sendo usado para cobrir o erro de todos os metodos</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">*</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+ <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Resource not found</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+
+	
+ <span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">,()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">server is litening on port 5000...</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Se o index.html não estiver na mesma pasta dos outros arquivos da barra de navegação:</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+	<span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">path</span><span class="dl">'</span><span class="p">)</span> <span class="c1">//built-in</span>
+	<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+	
+	<span class="c1">//o index.html não esta na pasta public</span>
+	<span class="c1">//passa os arquivos estáticos para o middleware</span>
+	<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kd">static</span><span class="p">(</span><span class="dl">'</span><span class="s1">./public</span><span class="dl">'</span><span class="p">))</span>
+	
+	<span class="nx">app</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">res</span><span class="p">.</span><span class="nx">sendFile</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="dl">'</span><span class="s1">./outrapasta/index.html</span><span class="dl">'</span><span class="p">))</span>
+	<span class="p">})</span>
+	<span class="c1">//nesse caso o all esta sendo usado para cobrir o erro de todos os metodos</span>
+	<span class="nx">app</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">*</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Resource not found</span><span class="dl">'</span><span class="p">)</span>
+	<span class="p">})</span>
+
+	
+	<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">,()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">server is litening on port 5000...</span><span class="dl">'</span><span class="p">)</span>
+	<span class="p">})</span>
+</code></pre></div></div>
+
+<h3 id="express-routes">Express Routes</h3>
+<p>Vamos supor que estamos fazendo um e-commerce e queremos criar uma rota para acessar todos os produto e outra para adicionar um produto. Sem o express as rotas seriam chamadas  de modo similar ao primeiro exemplo, mas com o express seria assim:</p>
+
+<ol>
+  <li>No arquivo app.js criamos o servidor, importamos as rotas que iremos criar e definimos o nome das rotas que iremos utilizar  :
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+ <span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+	
+ <span class="c1">//rotas </span>
+ <span class="kd">const</span> <span class="nx">productsRouter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./routes/prducts</span><span class="dl">'</span><span class="p">)</span>
+	
+ <span class="c1">// json parser</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+	
+ <span class="c1">// prefixo da rota products e o nome do Router que usa esse prefixo</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">"</span><span class="s2">/api/products</span><span class="dl">"</span><span class="p">,</span> <span class="nx">productsRouter</span><span class="p">)</span>
+
+ <span class="c1">// erro para bad request</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">*</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+ <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Resource not found</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+	
+ <span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">,()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">server is litening on port 5000...</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Criamos um arquivo separado com o nome desejado (no caso ‘products.js’ na pasta routes) e definimos o que vai acontecer quando a url que está sendo passada para router for chamada com métodos específicos:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+ <span class="kd">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">()</span>
+	
+ <span class="c1">//controllers</span>
+ <span class="c1">// funções que executam quando a rota "/api/products", definida no app.js é chamada com o método get ou post</span>
+ <span class="kd">const</span> <span class="nx">getAllProducts</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">all products</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">}</span>
+ <span class="kd">const</span> <span class="nx">createProduct</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">all products</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">}</span>
+	
+ <span class="c1">// nesse caso o route aponta para "/api/products/"</span>
+ <span class="nx">router</span><span class="p">.</span><span class="nx">route</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">).</span><span class="kd">get</span><span class="p">(</span><span class="nx">getAllProducts</span><span class="p">).</span><span class="nx">post</span><span class="p">(</span><span class="nx">createProduct</span><span class="p">)</span>
+
+ <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">router</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="middlewares">Middlewares</h3>
+<p>Os middlewares são funções que excutam quando uma requisição é feita antes de uma resposta ser dada. Eles recebem como parametro a requisição, a resposta e o next, que indica o que fazer a seguir (a response).
+	- req =&gt; middleware =&gt;res
+Para demonstrar, vamos pegar o exemplo anterior, mas agora a rota só pode ser
+se o usuário estiver autenticado:</p>
+
+<ol>
+  <li>Primeiro criamos o middleware:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// middleware/authentication.js</span>
+ <span class="kd">const</span> <span class="nx">authMiddleware</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">,</span><span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="k">try</span><span class="p">{</span>
+         <span class="nx">metododeAutenticacao</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span>
+         <span class="nx">next</span><span class="p">()</span> <span class="c1">// acaba o middleware e passa para a resposta</span>
+     <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+         <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span>
+     <span class="p">}</span>
+      <span class="c1">// end middleware</span>
+<span class="p">}</span>
+ <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">authMiddleware</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Agora importamos o middleware e o passamos antes do router ser chamado no app.js:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+ <span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+ <span class="kd">const</span> <span class="nx">authMiddleware</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./middleware/authentication</span><span class="dl">'</span><span class="p">)</span> 
+ <span class="c1">//rotas </span>
+ <span class="kd">const</span> <span class="nx">productsRouter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./routes/prducts</span><span class="dl">'</span><span class="p">)</span>
+	
+ <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+ <span class="c1">// o express passa o os parametros automaticamente</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">"</span><span class="s2">/api/products</span><span class="dl">"</span><span class="p">,</span> <span class="nx">authMiddleware</span><span class="p">,</span><span class="nx">productsRouter</span><span class="p">)</span>
+
+	
+ <span class="nx">app</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">*</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+ <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Resource not found</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+	
+ <span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">,()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">server is litening on port 5000...</span><span class="dl">'</span><span class="p">)</span>
+ <span class="p">})</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
