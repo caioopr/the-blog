@@ -1,9 +1,13 @@
-
+---
+toc: true
+layout: post
+description: Usando o framework Express.js no back-end.
+categories: [node , express, javascript, backend]
+title: Express.js
+---
 
 
 # Express.js
-categories: [node , express, javascript, backend]
-
 
 ## O que é ?
 O Express.js é um framework NodeJs que disponibiliza recursos para construção de servidores web, facilitando a criação do back-end.
